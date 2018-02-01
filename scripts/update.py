@@ -36,7 +36,7 @@ def executeCommand(command):
 def update():
 	writeLineToFile(get_time()+SLEEP_TIME, LAST_REFRESH_FILE)
 	writeLineToFile("Updating...", LAST_OUTPUT_FILE)
-	executeCommand(["/usr/tweaks/update.sh"])
+	executeCommand(["/home/lars/dotfiles/scripts/update.sh"])
 
 def check_updates():
 	writeLineToFile(get_time()+SLEEP_TIME, LAST_REFRESH_FILE)
