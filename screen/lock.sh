@@ -1,6 +1,6 @@
 #!/bin/bash
 TMPBG=/tmp/screen.png
-LOCK=/home/screen/lock_darken.png
+LOCK=~/dotfiles/screen/lock_darken.png
 RES=1920x1080
  
 #ffmpeg -f x11grab -video_size $RES -y -i $DISPLAY -i $LOCK -filter_complex "boxblur=16:8,overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/2" -vframes 1 $TMPBG

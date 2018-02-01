@@ -11,7 +11,7 @@ if [ $# -eq 0 ] ; then
    exit 192
 fi 
 
-icon="~/dotfiles/screen/light/ic_backlight_high.png"
+icon="/home/lars/dotfiles/screen/light/ic_backlight_high.png"
 
 case $1 in
 -inc ) 

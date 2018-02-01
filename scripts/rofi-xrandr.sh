@@ -90,7 +90,7 @@ then
     external=$displays
 fi
 
-res=$(print_menu | rofi -dmenu -sep '\0' -lines "$element_count" -eh "$element_height" -p '' -no-custom -format i)
+res=$(print_menu | rofi -dpi 120 -dmenu -sep '\0' -lines "$element_count" -eh "$element_height" -p '' -no-custom -format i)
 
 if [ -z "$res" ] ; then
     exit

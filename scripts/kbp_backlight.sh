@@ -11,7 +11,7 @@ if [ $# -eq 0 ] ; then
    exit 192
 fi 
 
-icon="~/dotfiles/screen/light/ic_keyboard.png"
+icon="/home/lars/dotfiles/screen/light/ic_keyboard.png"
 
 case $1 in
 -inc ) 
@@ -28,12 +28,12 @@ case $1 in
    ;;
 esac
 
-sudo ~/dotfiles/scripts/kbp_backlight_adjust -set $KBD_BACKLIGHT_LEV
+sudo ~/dotfiles/scripts/kbp_backlight_adjust.sh -set $KBD_BACKLIGHT_LEV
 
 VALUE=$(expr $KBD_BACKLIGHT_LEV \* 100)
 VALUE=$(expr $VALUE / $KBD_BACKLIGHT_MAX)
 
 echo $VALUE
 
-notify-send "dsp" -i $icon -h int:value:$VALUE -t 500 -h string:x-canonical-private-synchronous:dsp -h string:synchronous:dsp -h string:private-synchronous:dsp
+notify-send "kbp" -i $icon -h int:value:$VALUE -t 500 -h string:x-canonical-private-synchronous:dsp -h string:synchronous:dsp -h string:private-synchronous:dsp
 
