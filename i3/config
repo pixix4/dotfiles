@@ -145,7 +145,7 @@ bindsym XF86PowerOff exec "~/dotfiles/screen/lock.sh --mute"
 bindsym $mod+Shift+l exec "~/dotfiles/screen/lock.sh"
 bindsym $mod+n exec networkmanager_dmenu
 bindsym $mod+r mode "resize"
-bindsym $mod+m exec "~/dotfiles/scripts/rofi-xrandr.sh"
+bindsym $mod+m exec "~/dotfiles/scripts/rofi-xrandr.sh 'i3-msg restart'"
 
 bindsym $mod+Tab workspace next
 bindsym $mod+Shift+Tab workspace prev
@@ -182,11 +182,11 @@ exec --no-startup-id nm-applet
 bindsym $mod+Pause exec --no-startup-id mpc toggle
 bindsym $mod+Print exec --no-startup-id gnome-screenshot -w
 
-bindsym XF86KbdBrightnessDown exec "~/dotfiles/scripts/kbp_backlight.sh -dec"
-bindsym XF86KbdBrightnessUp exec "~/dotfiles/scripts/kbp_backlight.sh -inc"
+bindsym XF86KbdBrightnessDown exec "sudo ~/dotfiles/scripts/kbd_backlight.sh --dec"
+bindsym XF86KbdBrightnessUp exec "sudo ~/dotfiles/scripts/kbd_backlight.sh --inc"
 
-bindsym XF86MonBrightnessDown exec "~/dotfiles/scripts/dsp_backlight.sh -dec"
-bindsym XF86MonBrightnessUp exec "~/dotfiles/scripts/dsp_backlight.sh -inc"
+bindsym XF86MonBrightnessDown exec "sudo ~/dotfiles/scripts/dsp_backlight.sh --dec"
+bindsym XF86MonBrightnessUp exec "sudo ~/dotfiles/scripts/dsp_backlight.sh --inc"
 
 bindsym XF86AudioRaiseVolume exec --no-startup-id "~/dotfiles/scripts/volume_up.sh"
 bindsym XF86AudioLowerVolume exec --no-startup-id "~/dotfiles/scripts/volume_down.sh"
