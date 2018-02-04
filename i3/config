@@ -182,6 +182,8 @@ exec --no-startup-id nm-applet
 bindsym $mod+Pause exec --no-startup-id mpc toggle
 bindsym $mod+Print exec --no-startup-id gnome-screenshot -w
 
+bindsym XF86TouchpadToggle exec "~/dotfiles/scripts/toggletouchpad.sh"
+
 bindsym XF86KbdBrightnessDown exec "sudo ~/dotfiles/scripts/kbd_backlight.sh --dec"
 bindsym XF86KbdBrightnessUp exec "sudo ~/dotfiles/scripts/kbd_backlight.sh --inc"
 

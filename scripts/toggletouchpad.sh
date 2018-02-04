@@ -1,6 +1,13 @@
 #!/bin/bash
-if synclient -l | grep "TouchpadOff .*=.*0" ; then
-    synclient TouchpadOff=1 ;
+
+device=14
+
+if xinput list-props $device | grep "Device Enabled ([0-9]*):.*1" > /dev/null
+then
+  xinput disable $device
+  value="Off"
 else
-    synclient TouchpadOff=0 ;
+  xinput enable $device
+  value="On"
 fi
+notify-send "Trackpad" "$value" -t 500 -i "/home/lars/dotfiles/screen/light/ic_touch_app.png" -h string:x-canonical-private-synchronous:volume

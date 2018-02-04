@@ -13,4 +13,4 @@ else
     amixer -q -D pulse sset Master unmute
 fi
 
-notify-send "volume" -i $icon -h int:value:$volume -t 500 -h string:x-canonical-private-synchronous:volume -h string:synchronous:volume -h string:private-synchronous:volume
+notify-send "volume" -i $icon -t 500 -h int:value:$volume -h string:x-canonical-private-synchronous:volume
