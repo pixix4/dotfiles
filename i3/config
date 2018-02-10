@@ -145,7 +145,7 @@ bindsym XF86PowerOff exec "~/dotfiles/screen/lock.sh --mute"
 bindsym $mod+Shift+l exec "~/dotfiles/screen/lock.sh"
 bindsym $mod+n exec networkmanager_dmenu
 bindsym $mod+r mode "resize"
-bindsym $mod+m exec "~/dotfiles/scripts/rofi-xrandr.sh 'i3-msg restart'"
+bindsym $mod+p exec "~/dotfiles/scripts/rofi-xrandr.sh 'i3-msg restart'"
 
 bindsym $mod+Tab workspace next
 bindsym $mod+Shift+Tab workspace prev
@@ -162,10 +162,10 @@ gaps outer 0
 smart_gaps on
 smart_borders no_gaps
 
-bindsym $mod+o exec "~/dotfiles/scripts/run-and-switch.sh Telegram telegram-desktop 21"
-bindsym $mod+Shift+o move container to workspace 21
-bindsym $mod+p exec "~/dotfiles/scripts/run-and-switch.sh thunderbird thunderbird 22"
-bindsym $mod+Shift+p move container to workspace 22
+bindsym $mod+t exec "~/dotfiles/scripts/run-and-switch.sh Telegram telegram-desktop 21"
+bindsym $mod+Shift+t move container to workspace 21
+bindsym $mod+z exec "~/dotfiles/scripts/run-and-switch.sh thunderbird thunderbird 22"
+bindsym $mod+Shift+z move container to workspace 22
 
 exec --no-startup-id "mpd ~/dotfiles/mpd/mpd.conf"
 
@@ -178,6 +178,7 @@ exec --no-startup-id "xrandr --dpi 140"
 exec_always --no-startup-id "~/dotfiles/scripts/launch-polybar.sh"
 exec_always --no-startup-id "~/.fehbg"
 exec --no-startup-id nm-applet
+exec --no-startup-id redshift
 
 bindsym $mod+Pause exec --no-startup-id mpc toggle
 bindsym $mod+Print exec --no-startup-id gnome-screenshot -w
