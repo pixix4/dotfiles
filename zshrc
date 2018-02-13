@@ -20,4 +20,4 @@ alias stop-docker='docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q
 alias rs='setsid redshift'
 alias reload-color='killall -USR1 termite'
 alias rgp='cd /mnt/Daten/RoboticGamePlayer'
-
+alias mines='/mnt/Daten/PMines/main.py'
