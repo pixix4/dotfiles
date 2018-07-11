@@ -2,7 +2,7 @@
 TMPBG=/tmp/screen.png
 LOCK=~/dotfiles/screen/lock_darken.png
 RES=1920x1080
- 
+
 #ffmpeg -f x11grab -video_size $RES -y -i $DISPLAY -i $LOCK -filter_complex "boxblur=16:8,overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/2" -vframes 1 $TMPBG
 ffmpeg -f x11grab -video_size $RES -y -i $DISPLAY -i $LOCK -filter_complex "overlay=0:0,boxblur=16:8" -vframes 1 $TMPBG
 
@@ -11,14 +11,14 @@ let MUTE=`amixer -D pulse sget Master | grep "off" | wc -l`
 
 MUTE=false
 if [ $# -ne 0 ] ; then
-  	if [ "$1" == "--mute" ] ; then
-		MUTE=true
-	fi
+    if [ "$1" == "--mute" ] ; then
+        MUTE=true
+    fi
 fi
 
 if [ "$MUTE" = true ] ; then
-	amixer -q -D pulse sset Master mute
-	mpc pause
+    amixer -q -D pulse sset Master mute
+    mpc pause
 fi
 
 B='#00000000'  # blank
@@ -45,16 +45,23 @@ i3lock -i $TMPBG -n -f   \
 --linecolor=$B           \
 --separatorcolor=$D      \
 \
---textcolor=$T           \
 --timecolor=$T           \
 --datecolor=$T           \
+--verifcolor=$T          \
+--wrongcolor=$T          \
+--timecolor=$T           \
 --keyhlcolor=$I          \
 --bshlcolor=$BS          \
 --timestr="%H:%M"        \
 --datestr="%A, %d %b %Y" \
---textsize=20            \
 --veriftext="verifying…" \
 --wrongtext="wrong!"     \
+--wrongtext="clean"      \
+--timesize=28            \
+--datesize=12            \
+--layoutsize=24          \
+--verifsize=24           \
+--wrongsize=24           \
 
 COUNT=0
 

@@ -4,17 +4,17 @@
 shopt -s -o nounset
 
 declare -i KBD_BACKLIGHT_MAX=`cat /sys/class/leds/asus\:\:kbd_backlight/max_brightness`
-declare -i KBD_BACKLIGHT_LEV=`cat /sys/class/leds/asus\:\:kbd_backlight/brightness` 
+declare -i KBD_BACKLIGHT_LEV=`cat /sys/class/leds/asus\:\:kbd_backlight/brightness`
 
 # We need a parameter, etiher inc or dec
 if [ $# -eq 0 ] ; then
     exit 192
-fi 
+fi
 
 icon="/home/lars/dotfiles/screen/light/ic_keyboard.png"
 
 case $1 in
-    -i|--inc) 
+    -i|--inc)
         if [ ${KBD_BACKLIGHT_LEV} -lt ${KBD_BACKLIGHT_MAX}  ] ; then
             KBD_BACKLIGHT_LEV=${KBD_BACKLIGHT_LEV}+1
         fi

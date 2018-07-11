@@ -1,7 +1,37 @@
 set rtp+=/usr/lib/python3.6/site-packages/powerline/bindings/vim/
 
+execute pathogen#infect()
 set laststatus=2
 
+"autocmd ColorScheme *
+highlight ExtraWhitespace ctermbg=red guibg=red
 set t_Co=256
-colorscheme base16-custom
+"let base16colorspace=256
+"colorscheme base16-custom
 syntax on
+filetype plugin indent on
+hi Normal guibg=NONE ctermbg=NONE
+
+set expandtab
+set smartindent
+set shiftwidth=4
+set softtabstop=4
+set shiftround
+set hlsearch
+set incsearch
+set ignorecase
+set smartcase
+
+set number
+set relativenumber
+set showcmd
+
+set colorcolumn=120
+set scrolloff=2
+
+let g:indentLine_char = '▏'
+set ttimeoutlen=0
+
+match ExtraWhitespace /\s\+\%#\@<!$\|\t/
+autocmd InsertLeave * redraw!
+

@@ -4,17 +4,17 @@
 shopt -s -o nounset
 
 declare -i DSP_BACKLIGHT_MAX=`cat /sys/class/backlight/intel_backlight/max_brightness`
-declare -i DSP_BACKLIGHT_LEV=`cat /sys/class/backlight/intel_backlight/brightness` 
+declare -i DSP_BACKLIGHT_LEV=`cat /sys/class/backlight/intel_backlight/brightness`
 
 # We need a parameter, etiher inc or dec
 if [ $# -eq 0 ] ; then
     exit 192
-fi 
+fi
 
 icon="/home/lars/dotfiles/screen/light/ic_backlight_high.png"
 
 case $1 in
-    -i|--inc) 
+    -i|--inc)
         if [ ${DSP_BACKLIGHT_LEV} -lt ${DSP_BACKLIGHT_MAX}  ] ; then
             DSP_BACKLIGHT_LEV=${DSP_BACKLIGHT_LEV}+5
         else
@@ -35,7 +35,7 @@ case $1 in
             DSP_BACKLIGHT_LEV=$DSP_BACKLIGHT_MAX
         else
             DSP_BACKLIGHT_LEV=$2
-        fi  
+        fi
     ;;
 esac
 

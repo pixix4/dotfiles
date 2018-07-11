@@ -16,15 +16,15 @@ while [[ $# -gt 0 ]]; do
         ;;
         -h|--help)
 cat <<EOF
-A rofi script to control an external monitor. 
+A rofi script to control an external monitor.
 
 This script tries to find an internal and external monitor:
-If no internal monitor can be found this script fails. 
+If no internal monitor can be found this script fails.
 If no or more than one external monitor(s) are detected this script will only offer an option to disable all monitor ports.
 
 You can also specify what commands should be executed after an screen change.
 
-Usage: 
+Usage:
     ./rofi-xrandr.sh [-i MONITOR] [-e MONITOR] [Commands ...]
     ./rofi-xrandr.sh "i3-msg restart"   //Autodetect internal and external monitor. Execute "i3-msg restart" after screen change
     ./rofi-xrandr.sh -i eDP1 -e HDMI1   //Use 'eDP1' as internal and 'HDMI1' as external monitor
@@ -63,7 +63,7 @@ fi
 internal_only() {
 cat <<EOF
 ┌───────┐ ╭┄┄┄┄╮
-│       │ ┆    ┆   Internal screen only
+│       │ ┊    ┊   Internal screen only
 │       │ ╰┄┄┄┄╯
 └───────┘
 EOF
@@ -87,8 +87,8 @@ EOF
 external_only() {
 cat <<EOF
 ╭┄┄┄┄┄┄┄╮ ┏━━━━┓
-┆       ┆ ┃    ┃   External monitor only ($external)
-┆       ┆ ┗━━━━┛
+┊       ┊ ┃    ┃   External monitor only ($external)
+┊       ┊ ┗━━━━┛
 ╰┄┄┄┄┄┄┄╯
 EOF
 }

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-setsid termite --exec='bash -c "pacaur -Syyu && /home/lars/dotfiles/scripts/update.py --reset"' &
+setsid termite --exec='bash -c "yes \"\" | yay -Syyu; /home/lars/dotfiles/scripts/update.py --reset"' &

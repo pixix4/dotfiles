@@ -8,7 +8,7 @@ icon="/home/lars/dotfiles/screen/volume/ic_volume_off.png"
 
 if [ $mute -eq 0 ]; then
     amixer -q -D pulse sset Master mute
-else 
+else
     icon="/home/lars/dotfiles/screen/volume/ic_volume_up.png"
     amixer -q -D pulse sset Master unmute
 fi
