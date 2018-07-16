@@ -1,3 +1,4 @@
 .lastRefresh
 .lastOutput
 vim/swap/*
+**/__pycache__/**
