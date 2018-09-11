@@ -228,6 +228,7 @@ exec --no-startup-id "xrandr --dpi 140"
 
 exec_always --no-startup-id "~/dotfiles/scripts/launch-polybar.sh"
 exec_always --no-startup-id "~/.fehbg"
+exec_always --no-startup-id "~/dotfiles/scripts/update-theme.sh"
 exec --no-startup-id nm-applet
 exec --no-startup-id redshift
 
@@ -239,8 +240,11 @@ bindsym XF86TouchpadToggle exec "~/dotfiles/scripts/toggletouchpad.sh"
 bindsym XF86KbdBrightnessDown exec "sudo ~/dotfiles/scripts/kbd_backlight.sh --dec"
 bindsym XF86KbdBrightnessUp exec "sudo ~/dotfiles/scripts/kbd_backlight.sh --inc"
 
-bindsym XF86MonBrightnessDown exec "sudo ~/dotfiles/scripts/dsp_backlight.sh --dec"
-bindsym XF86MonBrightnessUp exec "sudo ~/dotfiles/scripts/dsp_backlight.sh --inc"
+bindsym XF86MonBrightnessDown exec "~/dotfiles/scripts/backlight.py darker"
+bindsym XF86MonBrightnessUp exec "~/dotfiles/scripts/backlight.py lighter"
+
+#bindsym XF86MonBrightnessDown exec "sudo ~/dotfiles/scripts/dsp_backlight.sh --dec"
+#bindsym XF86MonBrightnessUp exec "sudo ~/dotfiles/scripts/dsp_backlight.sh --inc"
 
 bindsym XF86AudioRaiseVolume exec --no-startup-id "~/dotfiles/scripts/volume_up.sh"
 bindsym XF86AudioLowerVolume exec --no-startup-id "~/dotfiles/scripts/volume_down.sh"

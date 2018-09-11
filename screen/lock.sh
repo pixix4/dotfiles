@@ -31,7 +31,7 @@ V='#4ee1e0dd'  # verifying
 
 I='#aad3eddd'  # input
 
-i3lock -i $TMPBG -n -f   \
+i3lock -c 101010 -i $TMPBG -n -f   \
 -k --indicator \
 \
 --insidevercolor=$C      \

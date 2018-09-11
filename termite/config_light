@@ -1,3 +1,7 @@
+[options]
+
+font = RobotoMono Nerd Font 10.2
+
 [colors]
 # Base16 Solarized Light
 # Author: Ethan Schoonover (modified by aramisgithub)
