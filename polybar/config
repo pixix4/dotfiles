@@ -53,7 +53,7 @@ font-4 = DejaVu Sans=12;2
 modules-left = keyboard i3
 modules-center = mpd
 ;modules-right = volume redshift backlight-acpi cpu battery date
-modules-right = volume backlight-acpi cpu battery date
+modules-right = volume cpu battery date
 
 tray-position = right
 tray-padding = 2
@@ -89,9 +89,9 @@ font-2 = RobotoMono Nerd Font:size=12;2
 font-3 = HoloLens MDL2 Assets:size=12;3
 font-4 = DejaVu Sans=12;1
 
-modules-left = mpd-bottom
-modules-center = pkg
-modules-right = memory filesystem-arch filesystem-windows filesystem-data address eth
+modules-left = pkg address eth
+modules-center = mpd-bottom
+modules-right = filesystem-arch filesystem-data filesystem-media memory
 
 wm-restack = i3
 override-redirect = true
@@ -132,24 +132,24 @@ interval = 25
 
 mount-0 = /
 
-format-mounted = " <label-mounted>"
+format-mounted = " <label-mounted>"
 label-mounted = %free%
-format-unmounted = "   "
+format-unmounted = "   "
 
 bar-used-width = 12
 bar-used-indicator = ┠
 bar-used-fill = ━
 bar-used-empty = ─
 
-[module/filesystem-windows]
+[module/filesystem-media]
 type = internal/fs
 interval = 25
 
-mount-0 = /mnt/windows
+mount-0 = /media
 
-format-mounted = "  <label-mounted>"
+format-mounted = "  <label-mounted>"
 label-mounted = %free%
-format-unmounted = "  "
+format-unmounted = "  "
 
 bar-used-width = 12
 bar-used-indicator = ┠
@@ -160,7 +160,7 @@ bar-used-empty = ─
 type = internal/fs
 interval = 25
 
-mount-0 = /mnt/Daten
+mount-0 = /daten
 
 format-mounted = "  <label-mounted>"
 label-mounted = %free%
@@ -263,7 +263,8 @@ label-song = %title% - %artist%
 type = internal/mpd
 format-online = %{A:cantata&:}<label-song>%{A}  <icon-prev> <icon-stop> <toggle> <icon-next>
 
-format-stopped = %{A:cantata&:}Music%{A} <icon-play>
+;format-stopped = %{A:cantata&:}Music%{A} <icon-play>
+format-stopped = 
 
 icon-prev = 
 icon-stop = 
@@ -394,13 +395,16 @@ format-prefix-foreground = ${colors.foreground-alt}
 label = %time%
 
 [module/volume]
-type = internal/volume
+;type = internal/volume
 
-master-soundcard = pulse
+;master-soundcard = pulse
+type = internal/pulseaudio
 
 format-volume = <ramp-volume> <label-volume>
 label-volume = " %percentage%% "
 label-volume-foreground = ${root.foreground}
+
+interval = 2
 
 label-muted =  mute
 

@@ -45,7 +45,8 @@ bindsym $mod+Shift+q kill
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
-bindsym $mod+s exec --no-startup-id "rofi -modi drun -show drun -dpi 120 -p 'sdgdfg'"
+bindsym $mod+q exec --no-startup-id "rofi -modi window -show window -dpi 120"
+bindsym $mod+s exec --no-startup-id "rofi -modi drun -show drun -dpi 120"
 bindsym $mod+d exec --no-startup-id "rofi -modi run -show run -dpi 120"
 
 # change focus
@@ -73,7 +74,7 @@ bindsym $mod+f fullscreen toggle
 
 # change container layout (stacked, tabbed, toggle split)
 #bindsym $mod+s layout stacking
-#bindsym $mod+w layout tabbed
+bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
 
 # toggle tiling / floating
@@ -145,7 +146,6 @@ bindsym XF86PowerOff exec "~/dotfiles/screen/lock.sh --mute"
 bindsym $mod+Shift+l exec "~/dotfiles/screen/lock.sh"
 bindsym $mod+n exec networkmanager_dmenu
 bindsym $mod+r mode "resize"
-bindsym $mod+p exec "~/dotfiles/scripts/rofi-xrandr.sh 'i3-msg restart'"
 bindsym $mod+o exec "~/dotfiles/scripts/toggle-theme.sh"
 
 bindsym $mod+Tab workspace next
@@ -182,20 +182,25 @@ exec_always --no-startup-id "~/.fehbg"
 exec_always --no-startup-id "~/dotfiles/scripts/update-theme.sh"
 exec --no-startup-id nm-applet
 exec --no-startup-id redshift
+exec --no-startup-id compton
 
-bindsym $mod+Pause exec --no-startup-id mpc toggle
+bindsym $mod+F12 exec --no-startup-id mpc toggle
+bindsym $mod+Home exec --no-startup-id mpc toggle
 bindsym $mod+Print exec --no-startup-id gnome-screenshot -w
 
 bindsym XF86TouchpadToggle exec "~/dotfiles/scripts/toggletouchpad.sh"
+bindsym XF86Tools exec "~/dotfiles/scripts/toggletouchpad.sh"
 
-bindsym XF86KbdBrightnessDown exec "sudo ~/dotfiles/scripts/kbd_backlight.sh --dec"
-bindsym XF86KbdBrightnessUp exec "sudo ~/dotfiles/scripts/kbd_backlight.sh --inc"
+#bindsym XF86KbdBrightnessDown exec "sudo ~/dotfiles/scripts/kbd_backlight.sh --dec"
+#bindsym XF86KbdBrightnessUp exec "sudo ~/dotfiles/scripts/kbd_backlight.sh --inc"
 
 bindsym XF86MonBrightnessDown exec "~/dotfiles/scripts/backlight.py darker"
 bindsym XF86MonBrightnessUp exec "~/dotfiles/scripts/backlight.py lighter"
 
 #bindsym XF86MonBrightnessDown exec "sudo ~/dotfiles/scripts/dsp_backlight.sh --dec"
 #bindsym XF86MonBrightnessUp exec "sudo ~/dotfiles/scripts/dsp_backlight.sh --inc"
+
+bindsym XF86Display exec "~/dotfiles/scripts/rofi-xrandr.sh 'i3-msg restart'"
 
 bindsym XF86AudioRaiseVolume exec --no-startup-id "~/dotfiles/scripts/volume_up.sh"
 bindsym XF86AudioLowerVolume exec --no-startup-id "~/dotfiles/scripts/volume_down.sh"

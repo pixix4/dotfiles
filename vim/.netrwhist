@@ -1,3 +1,10 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =1
+let g:netrw_dirhist_cnt =8
 let g:netrw_dirhist_1='/home/lars/.config/fish'
+let g:netrw_dirhist_2='/home/lars/dotfiles/scripts'
+let g:netrw_dirhist_3='/daten/Robots-Rust/.cargo'
+let g:netrw_dirhist_4='/home/lars'
+let g:netrw_dirhist_5='/home/lars/.minecraft'
+let g:netrw_dirhist_6='/home/lars'
+let g:netrw_dirhist_7='/home/lars/.java'
+let g:netrw_dirhist_8='/home/lars/.java/.userPrefs'

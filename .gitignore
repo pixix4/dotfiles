@@ -2,3 +2,7 @@
 .lastOutput
 vim/swap/*
 **/__pycache__/**
+
+mpd/
+vim/plugged/
+

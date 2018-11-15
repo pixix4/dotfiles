@@ -1,9 +1,22 @@
-set rtp+=/usr/lib/python3.6/site-packages/powerline/bindings/vim/
+call plug#begin('~/.vim/plugged')
 
-execute pathogen#infect()
+Plug 'chriskempson/base16-vim'
+Plug 'mboughaba/i3config.vim'
+Plug 'udalov/kotlin-vim'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'dag/vim-fish'
+Plug 'vim-syntastic/syntastic'
+Plug 'airblade/vim-gitgutter'
+Plug 'davidhalter/jedi-vim'
+Plug 'majutsushi/tagbar'
+Plug 'scrooloose/nerdtree'
+
+call plug#end()
+
 set laststatus=2
 
-"autocmd ColorScheme *
+" autocmd ColorScheme *
 highlight ExtraWhitespace ctermbg=red guibg=red
 set t_Co=256
 let base16colorspace=256
@@ -11,6 +24,9 @@ colorscheme base16-custom
 syntax on
 filetype plugin indent on
 hi Normal guibg=NONE ctermbg=NONE
+
+let g:airline_theme='solarized'
+let g:airline_powerline_fonts = 1
 
 set expandtab
 set smartindent
@@ -21,6 +37,7 @@ set hlsearch
 set incsearch
 set ignorecase
 set smartcase
+set cursorline
 
 set number
 set relativenumber
@@ -34,4 +51,27 @@ set ttimeoutlen=0
 
 match ExtraWhitespace /\s\+\%#\@<!$\|\t/
 autocmd InsertLeave * redraw!
+
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+set wildmenu
+set wildignorecase
+set wildignore=*.o,*~,*.pyc,*.aux,*.bbl,*.blg,*-blx.bib,*.log,*.out,*.run.xml,*.toc,*.nav,*.snm
+
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+nmap <F5> :redraw!<CR>
+nmap <F7> :NERDTreeToggle<CR>
+nmap <F8> :TagbarToggle<CR>
+
+autocmd BufWinEnter * :redraw!
 

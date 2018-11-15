@@ -10,13 +10,18 @@ let COUNT=`pactl list | grep "State: RUNNING" | wc -l`
 let MUTE=`amixer -D pulse sget Master | grep "off" | wc -l`
 
 MUTE=false
-if [ $# -ne 0 ] ; then
-    if [ "$1" == "--mute" ] ; then
+UNBLOCK=false
+for var in "$@"
+do
+    if [ "$var" == "--mute" ] ; then
         MUTE=true
     fi
-fi
+    if [ "$var" == "--unblock" ] ; then
+        UNBLOCK=true
+    fi
+done
 
-if [ "$MUTE" = true ] ; then
+if [ "$MUTE" == true ] ; then
     amixer -q -D pulse sset Master mute
     mpc pause
 fi
@@ -31,7 +36,12 @@ V='#4ee1e0dd'  # verifying
 
 I='#aad3eddd'  # input
 
-i3lock -c 101010 -i $TMPBG -n -f   \
+BLOCK_STRING='-n'
+if [ "$UNBLOCK" == true ]; then
+    BLOCK_STRING=''
+fi
+
+i3lock -c 101010 -i $TMPBG $BLOCK_STRING -f   \
 -k --indicator \
 \
 --insidevercolor=$C      \
@@ -65,7 +75,7 @@ i3lock -c 101010 -i $TMPBG -n -f   \
 
 COUNT=0
 
-if [ $COUNT -eq 0 ] && [ $MUTE -eq 0 ]; then
+if [ $COUNT -eq 0 ] && [ $MUTE == false ]; then
     amixer -q -D pulse sset Master unmute
 fi
 

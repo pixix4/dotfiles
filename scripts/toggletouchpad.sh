@@ -1,6 +1,6 @@
 #!/bin/bash
 
-device=$(xinput --list | grep "Touchpad" | xargs -n 1 | grep "id=" | sed 's/id=//g')
+device=$(xinput list | grep "Synaptics" | xargs -n 1 | grep "id=" | sed 's/id=//g')
 
 if xinput list-props $device | grep "Device Enabled ([0-9]*):.*1" > /dev/null
 then
