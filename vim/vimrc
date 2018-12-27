@@ -23,7 +23,7 @@ let base16colorspace=256
 colorscheme base16-custom
 syntax on
 filetype plugin indent on
-hi Normal guibg=NONE ctermbg=NONE
+"hi Normal guibg=NONE ctermbg=NONE
 
 let g:airline_theme='solarized'
 let g:airline_powerline_fonts = 1
