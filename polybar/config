@@ -240,25 +240,6 @@ label-urgent = %icon%
 label-urgent-background = ${module/bspwm.label-urgent-background}
 label-urgent-padding = ${module/bspwm.label-urgent-padding}
 
-[module/volumio]
-type = internal/mpd
-host = 192.168.188.44
-format-online = %{A:~/dotfiles/polybar/volumio.sh&:}<label-song>%{A} <toggle> <icon-next>
-
-format-stopped = Volumio <icon-play>
-
-icon-prev = 
-icon-stop = 
-icon-play = 
-icon-pause = 
-icon-next = 
-
-label-song-maxlen = 30
-label-song-ellipsis = true
-
-label-song = %title% - %artist%
-
-
 [module/mpd]
 type = internal/mpd
 format-online = %{A:cantata&:}<label-song>%{A}  <icon-prev> <icon-stop> <toggle> <icon-next>

@@ -11,6 +11,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'davidhalter/jedi-vim'
 Plug 'majutsushi/tagbar'
 Plug 'scrooloose/nerdtree'
+Plug 'lilydjwg/colorizer'
 
 call plug#end()
 
