@@ -7,4 +7,5 @@ if [ $COUNT -eq 0 ] ; then
 fi
 
 #wmctrl -x -a $1
-i3-msg workspace $3
+#i3-msg workspace $3
+bspc desktop -f $3

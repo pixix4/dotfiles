@@ -1,0 +1,333 @@
+#!/usr/bin/env python3
+
+from __future__ import print_function
+import math
+import datetime
+import json
+import os
+from enum import Enum
+from typing import Tuple, Optional
+
+LATITUTE = 51.0
+LONGITUTE = 13.65
+FILE = "/home/lars/.theme"
+
+def on_enable_light_mode():
+    os.system("cp /home/lars/dotfiles/termite/config_light /home/lars/dotfiles/termite/config")
+    os.system("killall -q -USR1 termite")
+
+def on_enable_dark_mode():
+    os.system("cp /home/lars/dotfiles/termite/config_dark /home/lars/dotfiles/termite/config")
+    os.system("killall -q -USR1 termite")
+
+def on_status_change(theme: 'Theme', modus: 'Modus'):
+    if modus is Modus.AUTO:
+        name = "Auto Theme"
+        icon = "/home/lars/dotfiles/screen/light/ic_backlight_auto.png"
+    elif theme is Theme.LIGHT:
+        name = "Light Theme"
+        icon = "/home/lars/dotfiles/screen/light/ic_backlight_low.png"
+    else:
+        name = "Dark Theme"
+        icon = "/home/lars/dotfiles/screen/light/ic_backlight_high.png"
+
+    os.system("notify-send {} -i {} -h string:synchronous:dsp".format(name, icon))
+
+def on_progress(theme: 'Theme', progress: Optional[float]):
+    force = 0
+    if theme is Theme.LIGHT:
+        images = ["01-Morning.png","02-Morning.png", "03-Morning.png", "04-Day.png", "05-Day.png", "06-Day.png"]
+        image = "05-Day.png"
+    else:
+        images = ["07-Evening.png", "08-Evening.png", "09-Evening.png", "10-Night.png", "11-Night.png", "12-Night.png"]
+        image = "11-Night.png"
+
+    if progress is not None:
+         image = images[int(len(images) * progress)]
+
+    dirname, filename = os.path.split(os.path.abspath(__file__))
+
+    print(image)
+    os.system("feh --bg-fill {}".format(os.path.join(dirname,"backgrounds",image)))
+
+class Theme(Enum):
+    LIGHT = 1
+    DARK = 2
+
+class Modus(Enum):
+    AUTO = 1
+    MANUEL = 2
+
+"""
+---------------------------------------------------------------------
+"""
+
+"""
+This module is a wrapper to compute sunset and sunrise for a given day,
+location, and zenith value. Sunset and sunrise are returned for the local time
+zone.
+"""
+
+CIVIL_ZENITH = 90.83333 # civil
+
+class SunriseSunset(object):
+    """
+    This class wraps the computation for sunset and sunrise. It relies on the
+    datetime class as input and output.
+    """
+    def __init__(self, dt, latitude, longitude, localOffset=0, zenith=None):
+        self.dt          = dt.replace(hour=0, minute=0, second=0, microsecond=0)
+        if latitude < -90 or latitude > 90:
+            raise ValueError('Invalid latitude value')
+        if longitude < -180 or longitude > 180:
+            raise ValueError('Invalid longitude value')
+        if localOffset < -12 or localOffset > 14:
+            raise ValueError('Invalid localOffset value')
+        self.latitude    = latitude
+        self.longitude   = longitude
+        self.localOffset = localOffset
+        self.zenith      = zenith if zenith is not None else CIVIL_ZENITH
+
+    # ALGORITHM
+
+    def calculate(self, date=None):
+        """Computes the sunset and sunrise for the current day, in local time"""
+        if date is None:
+            date = self.dt
+
+        # Calculate the day of the year
+        N = self.dt.timetuple().tm_yday
+
+        # Convert the longitude to hour value and calculate an approximate time
+        lngHour = self.longitude / 15
+        t_rise = N + ((6 - lngHour) / 24)
+        t_set = N + ((18 - lngHour) / 24)
+
+        # Calculate the Sun's mean anomaly
+        M_rise = (0.9856 * t_rise) - 3.289
+        M_set = (0.9856 * t_set) - 3.289
+
+        # Calculate the Sun's true longitude, and adjust angle to be between 0
+        # and 360
+        L_rise = (M_rise + (1.916 * math.sin(math.radians(M_rise))) + (0.020 * math.sin(math.radians(2 * M_rise))) + 282.634) % 360
+        L_set = (M_set + (1.916 * math.sin(math.radians(M_set))) + (0.020 * math.sin(math.radians(2 * M_set))) + 282.634) % 360
+
+        # Calculate the Sun's right ascension, and adjust angle to be between 0 and
+        # 360
+        RA_rise = (math.degrees(math.atan(0.91764 * math.tan(math.radians(L_rise))))) % 360
+        RA_set = (math.degrees(math.atan(0.91764 * math.tan(math.radians(L_set))))) % 360
+
+        # Right ascension value needs to be in the same quadrant as L
+        Lquadrant_rise  = (math.floor(L_rise/90)) * 90
+        RAquadrant_rise = (math.floor(RA_rise/90)) * 90
+        RA_rise = RA_rise + (Lquadrant_rise - RAquadrant_rise)
+
+        Lquadrant_set  = (math.floor(L_set/90)) * 90
+        RAquadrant_set = (math.floor(RA_set/90)) * 90
+        RA_set = RA_set + (Lquadrant_set - RAquadrant_set)
+
+        # Right ascension value needs to be converted into hours
+        RA_rise = RA_rise / 15
+        RA_set = RA_set / 15
+
+        # Calculate the Sun's declination
+        sinDec_rise = 0.39782 * math.sin(math.radians(L_rise))
+        cosDec_rise = math.cos(math.asin(sinDec_rise))
+
+        sinDec_set = 0.39782 * math.sin(math.radians(L_set))
+        cosDec_set = math.cos(math.asin(sinDec_set))
+
+        # Calculate the Sun's local hour angle
+        cos_zenith = math.cos(math.radians(self.zenith))
+        radian_lat = math.radians(self.latitude)
+        sin_latitude = math.sin(radian_lat)
+        cos_latitude = math.cos(radian_lat)
+        cosH_rise = (cos_zenith - (sinDec_rise * sin_latitude)) / (cosDec_rise * cos_latitude)
+        cosH_set = (cos_zenith - (sinDec_set * sin_latitude)) / (cosDec_set * cos_latitude)
+
+        # Finish calculating H and convert into hours
+        H_rise = (360 - math.degrees(math.acos(cosH_rise))) / 15
+        H_set = math.degrees(math.acos(cosH_set)) / 15
+
+        # Calculate local mean time of rising/setting
+        T_rise = H_rise + RA_rise - (0.06571 * t_rise) - 6.622
+        T_set = H_set + RA_set - (0.06571 * t_set) - 6.622
+
+        # Adjust back to UTC, and keep the time between 0 and 24
+        UT_rise = (T_rise - lngHour) % 24
+        UT_set = (T_set - lngHour) % 24
+
+        # Convert UT value to local time zone of latitude/longitude
+        localT_rise = (UT_rise + self.localOffset) % 24
+        localT_set = (UT_set + self.localOffset) % 24
+
+        # Conversion
+        h_rise = int(localT_rise)
+        m_rise = int(localT_rise % 1 * 60)
+        h_set = int(localT_set)
+        m_set = int(localT_set % 1 * 60)
+
+        # Create datetime objects with same date, but with hour and minute
+        # specified
+        rise_dt = date.replace(hour=h_rise, minute=m_rise)
+        set_dt = date.replace(hour=h_set, minute=m_set)
+        return rise_dt, set_dt
+
+"""
+---------------------------------------------------------------------
+"""
+
+def calculate(now, verbose) -> Tuple[Theme, float]:
+    if not now:
+        now = datetime.datetime.now()
+
+    time = SunriseSunset(now, latitude=LATITUTE, longitude=LONGITUTE)
+    rise_time, set_time = time.calculate()
+
+    daystart = now.replace(hour=0, minute=0, second=0, microsecond=0)
+
+    now_time = now - daystart
+
+    if verbose:
+        print("now: {}".format(now))
+        print("sunrise: {}".format(rise_time))
+        print("sunset: {}".format(set_time))
+
+    if now < rise_time:
+        yesterday = now - datetime.timedelta(days=1)
+        yesterday_rise_time, yesterday_set_time = SunriseSunset(yesterday, latitude=LATITUTE, longitude=LONGITUTE).calculate()
+
+        total = (daystart - yesterday_set_time) + (rise_time - daystart)
+        current = now - yesterday_set_time
+
+        return Theme.DARK, current.total_seconds() / total.total_seconds()
+    elif now < set_time:
+        total = set_time - rise_time
+        current = now - rise_time
+
+        return Theme.LIGHT, current.total_seconds() / total.total_seconds()
+    else:
+        tomorrow = now + datetime.timedelta(days=1)
+        tomorrow_rise_time, tomorrow_set_time = SunriseSunset(tomorrow, latitude=LATITUTE, longitude=LONGITUTE).calculate()
+        tomorrow_daystart = daystart + datetime.timedelta(days=1)
+
+        total = (tomorrow_daystart - set_time) + (tomorrow_rise_time - tomorrow_daystart)
+        current = now - set_time
+
+        return Theme.DARK, current.total_seconds() / total.total_seconds()
+
+def read_data() -> Tuple[Theme, Modus, Optional[float]]:
+    with open(FILE) as json_file:
+        data = json.load(json_file)
+
+    try:
+        theme = Theme[data["theme"]]
+    except (KeyError, AttributeError) as e:
+        theme = Theme.LIGHT
+    try:
+        modus = Modus[data["modus"]]
+    except (KeyError, AttributeError) as e:
+        modus = Modus.AUTO
+
+    try:
+        progress = data["progress"]
+        if progress:
+            progress = int(progress)
+    except (TypeError, AttributeError) as e:
+        progress = None
+
+    return theme, modus, progress
+
+
+def write_data(theme: Theme, modus: Modus, progress: Optional[float]):
+    with open(FILE, "w") as json_file:
+        json.dump({
+            "theme": theme.name,
+            "modus": modus.name,
+            "progress": progress
+        }, json_file, indent=4)
+
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description='Perform theming based on the current day time.')
+    parser.add_argument('-t', '--time', help='The current time (format: HH:MM)')
+    parser.add_argument('-d', '--date', help='The current date (format: YYYY:MM-DD)')
+
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('--auto', action='store_true', help='Change to auto mode')
+    group.add_argument('--light', action='store_true', help='Change to ligh mode')
+    group.add_argument('--dark', action='store_true', help='Change to dark mode')
+    group.add_argument('--toggle', action='store_true', help='Switch modes [auto -> light -> dark]')
+
+    parser.add_argument('-v', '--verbose', action='store_true', help='Enable verbose output')
+
+    args = parser.parse_args()
+    
+    verbose = args.verbose
+
+    dt = datetime.datetime.now().replace(microsecond=0)
+
+    if args.date:
+        try:
+            y,m,d = args.date.split("-")
+            dt = dt.replace(year=int(y), month=int(m), day=int(d))
+        except:
+            pass
+    if args.time:
+        try:
+            h,m = args.time.split(":")
+            dt = dt.replace(hour=int(h), minute=int(m), second=0)
+        except:
+            pass
+
+    old_theme, old_modus, old_progress = read_data()
+    theme = old_theme
+    modus = old_modus
+    progress = old_progress
+
+    if args.auto:
+        theme, progress = calculate(dt, verbose)
+        modus = Modus.AUTO
+    elif args.light:
+        theme = Theme.LIGHT
+        modus = Modus.MANUEL
+        progress = None
+    elif args.dark:
+        theme = Theme.DARK
+        modus = Modus.MANUEL
+        progress = None
+    elif args.toggle:
+        if old_modus is Modus.AUTO:
+            theme = Theme.LIGHT
+            modus = Modus.MANUEL
+            progress = None
+        elif old_theme is Theme.LIGHT:
+            theme = Theme.DARK
+            modus = Modus.MANUEL
+            progress = None
+        else:
+            theme, progress = calculate(dt, verbose)
+            modus = Modus.AUTO 
+    elif old_modus is Modus.AUTO:
+        theme, progress = calculate(dt, verbose)
+        modus = Modus.AUTO 
+        
+    write_data(theme, modus, progress)
+
+    if theme is not old_theme:
+        if theme == Theme.LIGHT:
+            on_enable_light_mode()
+        else:
+            on_enable_dark_mode()
+
+    if progress != old_progress or theme is not old_theme:
+        on_progress(theme, progress)
+
+    if theme is not old_theme and modus is Modus.MANUEL or modus is not old_modus:
+        on_status_change(theme, modus)
+
+    if verbose:
+        print(theme)
+        print(modus)
+        print(progress)
+

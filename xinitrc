@@ -1,2 +1,1 @@
-xrandr --dpi 120&
-
+bspwm

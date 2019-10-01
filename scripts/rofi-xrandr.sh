@@ -134,7 +134,7 @@ case "$res" in
         xrandr --output $internal --auto --primary --output $external --auto --pos 0x0
         ;;
     2)
-        xrandr --output $internal --auto --primary --output $external --auto --right-of $internal
+        xrandr --output $internal --auto --primary --output $external --auto --left-of $internal
         ;;
     3)
         xrandr --output $external --auto --output $internal --off

@@ -64,6 +64,11 @@ bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 
+bindsym $mod+Ctrl+Left move workspace to output left
+bindsym $mod+Ctrl+Down move workspace to output down
+bindsym $mod+Ctrl+Up move workspace to output up
+bindsym $mod+Ctrl+Right move workspace to output right
+
 # split in horizontal orientation
 bindsym $mod+h split h
 
@@ -164,16 +169,16 @@ set $blue	#268bd2
 set $cyan	#2aa198
 set $green	#859900
 
-# solarized dark
-set $baseA3 #002b36
-set $baseA2 #073642
-set $baseA1 #586e75
-set $baseA0 #657b83
-set $baseB0 #839496
-set $baseB1 #93a1a1
-set $baseB2 #eee8d5
-set $baseB3 #fdf6e3
-set $custom #1c5766
+# solarized light
+set $baseA3 #fdf6e3
+set $baseA2 #eee8d5
+set $baseA1 #93a1a1
+set $baseA0 #839496
+set $baseB0 #657b83
+set $baseB1 #586e75
+set $baseB2 #073642
+set $baseB3 #002b36
+set $custom #e1cab3
 
 # $i3-background
 exec_always --no-startup-id xsetroot -solid '$baseA2'
@@ -215,10 +220,10 @@ bindsym $mod+t exec "~/dotfiles/scripts/run-and-switch.sh Telegram telegram-desk
 bindsym $mod+Shift+t move container to workspace 21
 bindsym $mod+z exec "~/dotfiles/scripts/run-and-switch.sh thunderbird thunderbird 22"
 bindsym $mod+Shift+z move container to workspace 22
-#bindsym $mod+u exec "~/dotfiles/scripts/run-and-switch.sh slack slack 23"
-#bindsym $mod+Shift+u move container to workspace 23
+bindsym $mod+u exec "~/dotfiles/scripts/run-and-switch.sh slack slack 23"
+bindsym $mod+Shift+u move container to workspace 23
 
-exec --no-startup-id "mpd ~/dotfiles/mpd/mpd.conf"
+#exec --no-startup-id "mpd ~/dotfiles/mpd/mpd.conf"
 
 assign [class="Telegram"] 21
 assign [class="Thunderbird"] 22
@@ -251,11 +256,14 @@ bindsym XF86MonBrightnessUp exec "~/dotfiles/scripts/backlight.py lighter"
 #bindsym XF86MonBrightnessUp exec "sudo ~/dotfiles/scripts/dsp_backlight.sh --inc"
 
 bindsym XF86Display exec "~/dotfiles/scripts/rofi-xrandr.sh 'i3-msg restart'"
+bindsym $mod+p exec "~/dotfiles/scripts/rofi-xrandr.sh 'i3-msg restart'"
 
 bindsym XF86AudioRaiseVolume exec --no-startup-id "~/dotfiles/scripts/volume_up.sh"
 bindsym XF86AudioLowerVolume exec --no-startup-id "~/dotfiles/scripts/volume_down.sh"
 bindsym XF86AudioMute exec --no-startup-id "~/dotfiles/scripts/volume_toggle.sh"
+bindsym XF86AudioMicMute exec --no-startup-id "~/dotfiles/scripts/mic_toggle.sh"
 bindsym XF86AudioPlay exec --no-startup-id mpc toggle
 bindsym XF86AudioPause exec --no-startup-id mpc toggle
 bindsym XF86AudioNext exec --no-startup-id mpc next
 bindsym XF86AudioPrev exec --no-startup-id mpc prev
+
