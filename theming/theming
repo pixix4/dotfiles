@@ -12,6 +12,8 @@ LATITUTE = 51.0
 LONGITUTE = 13.65
 FILE = "/home/lars/.theme"
 
+verbos = False
+
 def on_enable_light_mode():
     os.system("cp /home/lars/dotfiles/termite/config_light /home/lars/dotfiles/termite/config")
     os.system("killall -q -USR1 termite")
@@ -40,15 +42,19 @@ def on_progress(theme: 'Theme', progress: Optional[float]):
         image = "05-Day.png"
     else:
         images = ["07-Evening.png", "08-Evening.png", "09-Evening.png", "10-Night.png", "11-Night.png", "12-Night.png"]
-        image = "11-Night.png"
+        image = "10-Night.png"
 
     if progress is not None:
          image = images[int(len(images) * progress)]
 
     dirname, filename = os.path.split(os.path.abspath(__file__))
 
-    print(image)
-    os.system("feh --bg-fill {}".format(os.path.join(dirname,"backgrounds",image)))
+    image_path = os.path.join(dirname,"backgrounds",image)
+
+    if verbose:
+        print("    Load background image '{}'".format(image_path))
+
+    os.system("feh --bg-fill {}".format(image_path))
 
 class Theme(Enum):
     LIGHT = 1
@@ -177,7 +183,7 @@ class SunriseSunset(object):
 ---------------------------------------------------------------------
 """
 
-def calculate(now, verbose) -> Tuple[Theme, float]:
+def calculate(now) -> Tuple[Theme, float]:
     if not now:
         now = datetime.datetime.now()
 
@@ -188,10 +194,6 @@ def calculate(now, verbose) -> Tuple[Theme, float]:
 
     now_time = now - daystart
 
-    if verbose:
-        print("now: {}".format(now))
-        print("sunrise: {}".format(rise_time))
-        print("sunset: {}".format(set_time))
 
     if now < rise_time:
         yesterday = now - datetime.timedelta(days=1)
@@ -199,13 +201,27 @@ def calculate(now, verbose) -> Tuple[Theme, float]:
 
         total = (daystart - yesterday_set_time) + (rise_time - daystart)
         current = now - yesterday_set_time
+        
+        progress = current.total_seconds() / total.total_seconds()
 
-        return Theme.DARK, current.total_seconds() / total.total_seconds()
+        if verbose:
+            print("sunset:  {}".format(yesterday_set_time))
+            print("now:     {0} ({1:3.2f}%)".format(now, progress * 100))
+            print("sunrise: {}".format(rise_time))
+
+        return Theme.DARK, progress
     elif now < set_time:
         total = set_time - rise_time
         current = now - rise_time
 
-        return Theme.LIGHT, current.total_seconds() / total.total_seconds()
+        progress = current.total_seconds() / total.total_seconds()
+
+        if verbose:
+            print("sunrise: {}".format(rise_time))
+            print("now:     {0} ({1:3.2f}%)".format(now, progress * 100))
+            print("sunset:  {}".format(set_time))
+
+        return Theme.LIGHT, progress
     else:
         tomorrow = now + datetime.timedelta(days=1)
         tomorrow_rise_time, tomorrow_set_time = SunriseSunset(tomorrow, latitude=LATITUTE, longitude=LONGITUTE).calculate()
@@ -214,7 +230,14 @@ def calculate(now, verbose) -> Tuple[Theme, float]:
         total = (tomorrow_daystart - set_time) + (tomorrow_rise_time - tomorrow_daystart)
         current = now - set_time
 
-        return Theme.DARK, current.total_seconds() / total.total_seconds()
+        progress = current.total_seconds() / total.total_seconds()
+
+        if verbose:
+            print("sunset:  {}".format(set_time))
+            print("now:     {0} ({1:3.2f}%)".format(now, progress * 100))
+            print("sunrise: {}".format(tomorrow_rise_time))
+
+        return Theme.DARK, progress
 
 def read_data() -> Tuple[Theme, Modus, Optional[float]]:
     with open(FILE) as json_file:
@@ -286,7 +309,7 @@ if __name__ == "__main__":
     progress = old_progress
 
     if args.auto:
-        theme, progress = calculate(dt, verbose)
+        theme, progress = calculate(dt)
         modus = Modus.AUTO
     elif args.light:
         theme = Theme.LIGHT
@@ -306,28 +329,37 @@ if __name__ == "__main__":
             modus = Modus.MANUEL
             progress = None
         else:
-            theme, progress = calculate(dt, verbose)
+            theme, progress = calculate(dt)
             modus = Modus.AUTO 
     elif old_modus is Modus.AUTO:
-        theme, progress = calculate(dt, verbose)
+        theme, progress = calculate(dt)
         modus = Modus.AUTO 
         
     write_data(theme, modus, progress)
 
+    if verbose:
+        print("Current theme is {} in modus {}".format(theme.name, modus.name))
+
     if theme is not old_theme:
         if theme == Theme.LIGHT:
+            if verbose:
+                print(" -> on_enable_light_mode()")
             on_enable_light_mode()
         else:
+            if verbose:
+                print(" -> on_enable_dark_mode()")
             on_enable_dark_mode()
 
     if progress != old_progress or theme is not old_theme:
+        if verbose:
+            if progress:
+                print(" -> on_progress({0}, {1:0.4f})".format(theme.name, progress))
+            else:
+                print(" -> on_progress({}, {})".format(theme.name, progress))
         on_progress(theme, progress)
 
     if theme is not old_theme and modus is Modus.MANUEL or modus is not old_modus:
+        if verbose:
+            print(" -> on_status_change({}, {})".format(theme.name, modus.name))
         on_status_change(theme, modus)
-
-    if verbose:
-        print(theme)
-        print(modus)
-        print(progress)
 

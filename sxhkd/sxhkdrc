@@ -58,9 +58,12 @@ super + {p,b,comma,period}
 #super + {_,shift + }c
 #    bspc node -f {next,prev}.local
 
-# focus the next/previous desktop in the current monitor
-super + bracket{left,right}
-    bspc desktop -f {prev,next}.local
+## focus the next/previous desktop in the current monitor
+#super + bracket{left,right}
+#    bspc desktop -f {prev,next}.local
+
+super + {j,k}
+    bspc desktop -m {prev,next} --follow
 
 # focus the last node/desktop
 super + Tab
@@ -73,8 +76,29 @@ super + Tab
 #    bspc wm -h on
 
 # focus or send to the given desktop
-super + {_,shift + }{1-9,0}
-    bspc {desktop -f,node -d} '^{1-9,10}'
+#super + {_,shift + }{1-9,0}
+#    bspc {desktop -f,node -d} '^{1-9,10}'
+
+super + {_,shift + } 1
+    bspc {desktop -f,node -d} I
+super + {_,shift + } 2
+    bspc {desktop -f,node -d} II
+super + {_,shift + } 3
+    bspc {desktop -f,node -d} III
+super + {_,shift + } 4
+    bspc {desktop -f,node -d} IV
+super + {_,shift + } 5
+    bspc {desktop -f,node -d} V
+super + {_,shift + } 6
+    bspc {desktop -f,node -d} VI
+super + {_,shift + } 7
+    bspc {desktop -f,node -d} VII
+super + {_,shift + } 8
+    bspc {desktop -f,node -d} VIII
+super + {_,shift + } 9
+    bspc {desktop -f,node -d} IX
+super + {_,shift + } 0
+    bspc {desktop -f,node -d} X
 
 super + t
     $HOME/dotfiles/scripts/run-and-switch.sh Telegram telegram-desktop XI
