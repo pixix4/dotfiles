@@ -1,0 +1,47 @@
+# i3blocks configuration file
+#
+# The i3blocks man page describes the usage of the binary,
+# and its website describes the configuration:
+#
+#     https://vivien.github.io/i3blocks
+
+
+# Global properties
+
+command=/usr/lib/i3blocks/$BLOCK_NAME/$BLOCK_NAME
+
+separator=true
+separator_block_width=15
+
+[spotify]
+command=~/.config/i3blocks/spotify
+label=
+interval=1
+
+[nordvpn]
+command=~/.config/i3blocks/nordvpn
+label=VPN 
+interval=5
+
+[iface]
+label=IP 
+interval=2
+
+[battery]
+label=BAT 
+interval=30
+
+[cpu_usage]
+label=CPU 
+interval=1
+
+[volume-pulseaudio]
+command=/usr/lib/i3blocks/volume-pulseaudio/volume-pulseaudio -f 3 -F 3
+label=VOL 
+interval=1
+
+[time]
+label=
+command=date '+%d.%m. %H:%M'
+interval=1
+

@@ -1,7 +1,7 @@
 #!/bin/sh
 
-volume=$(amixer -D pulse sset Master 2%- | grep -m 1 "%]" |cut -d "[" -f2|cut -d "%" -f1)
+pamixer -d 2
+volume=$(pamixer --get-volume)
+pamixer --unmute
 
-amixer -q -D pulse sset Master unmute
-
-notify-send "volume" -i "/home/lars/dotfiles/screen/volume/ic_volume_down.png" -t 500 -h int:value:$volume -h string:x-canonical-private-synchronous:volume
+notify-send "Volume: $volume" -i "/home/lars/dotfiles/icons/volume/ic_volume_down.png" -t 500 -h int:value:$volume -h string:x-canonical-private-synchronous:volume

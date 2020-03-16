@@ -12,69 +12,107 @@ LATITUTE = 51.0
 LONGITUTE = 13.65
 FILE = "/home/lars/.theme"
 
-verbos = False
+verbose = False
+
+
+def run(command):
+    return os.popen(command).read().strip().split("\n")
+
+
+def reload_nvim():
+    for nvim in run("/home/lars/.SpaceVim/bin/nsvc --serverlist"):
+        run("~/.SpaceVim/bin/nsvc --servername \"{}\" --remote-send \"<ESC><ESC>:source<SPACE>/home/lars/.vim/vimrc<CR><CR>\""
+            .format(nvim))
+
 
 def on_enable_light_mode():
-    os.system("cp /home/lars/dotfiles/termite/config_light /home/lars/dotfiles/termite/config")
-    os.system("killall -q -USR1 termite")
+    # run("cp /home/lars/dotfiles/termite/config_light /home/lars/dotfiles/termite/config")
+    # run("killall -q -USR1 termite")
+    run("cp /home/lars/.config/alacritty/alacritty_light.yml /home/lars/.config/alacritty/alacritty.yml"
+        )
+    # run("cp /home/lars/.config/rofi/vapor_light.rasi /home/lars/.config/rofi/vapor.rasi")
+    run("sed -i '/colorscheme_bg/c\    colorscheme_bg = \"light\"' /home/lars/.SpaceVim.d/init.toml"
+        )
+    reload_nvim()
+
 
 def on_enable_dark_mode():
-    os.system("cp /home/lars/dotfiles/termite/config_dark /home/lars/dotfiles/termite/config")
-    os.system("killall -q -USR1 termite")
+    # run("cp /home/lars/dotfiles/termite/config_dark /home/lars/dotfiles/termite/config")
+    # run("killall -q -USR1 termite")
+    run("cp /home/lars/.config/alacritty/alacritty_dark.yml /home/lars/.config/alacritty/alacritty.yml"
+        )
+    # run("cp /home/lars/.config/rofi/vapor_dark.rasi /home/lars/.config/rofi/vapor.rasi")
+    run("sed -i '/colorscheme_bg/c\    colorscheme_bg = \"dark\"' /home/lars/.SpaceVim.d/init.toml"
+        )
+    reload_nvim()
+
 
 def on_status_change(theme: 'Theme', modus: 'Modus'):
     if modus is Modus.AUTO:
         name = "Auto Theme"
-        icon = "/home/lars/dotfiles/screen/light/ic_backlight_auto.png"
+        icon = "/home/lars/dotfiles/icons/light/ic_backlight_auto.png"
     elif theme is Theme.LIGHT:
         name = "Light Theme"
-        icon = "/home/lars/dotfiles/screen/light/ic_backlight_low.png"
+        icon = "/home/lars/dotfiles/icons/light/ic_backlight_low.png"
     else:
         name = "Dark Theme"
-        icon = "/home/lars/dotfiles/screen/light/ic_backlight_high.png"
+        icon = "/home/lars/dotfiles/icons/light/ic_backlight_high.png"
 
-    os.system("notify-send {} -i {} -h string:synchronous:dsp".format(name, icon))
+    run("notify-send {} -i {} -h string:synchronous:dsp".format(name, icon))
+
 
 def on_progress(theme: 'Theme', progress: Optional[float]):
     force = 0
     if theme is Theme.LIGHT:
-        images = ["01-Morning.png","02-Morning.png", "03-Morning.png", "04-Day.png", "05-Day.png", "06-Day.png"]
+        images = [
+            "01-Morning.png", "02-Morning.png", "03-Morning.png", "04-Day.png",
+            "05-Day.png", "06-Day.png"
+        ]
         image = "05-Day.png"
     else:
-        images = ["07-Evening.png", "08-Evening.png", "09-Evening.png", "10-Night.png", "11-Night.png", "12-Night.png"]
+        images = [
+            "07-Evening.png", "08-Evening.png", "09-Evening.png",
+            "10-Night.png", "11-Night.png", "12-Night.png"
+        ]
         image = "10-Night.png"
 
     if progress is not None:
-         image = images[int(len(images) * progress)]
+        image = images[int(len(images) * progress)]
 
     dirname, filename = os.path.split(os.path.abspath(__file__))
 
-    image_path = os.path.join(dirname,"backgrounds",image)
+    image_path = os.path.join(dirname, "backgrounds", image)
 
     if verbose:
         print("    Load background image '{}'".format(image_path))
 
-    os.system("feh --bg-fill {}".format(image_path))
+    # run("feh --bg-fill {}".format(image_path))
+    run("swaymsg \"output * bg {} fill\"".format(image_path))
+    run("sed -i \"/output \\* bg/c\output * bg {} fill\" /home/lars/.config/sway/config"
+        .format(image_path))
+
 
 class Theme(Enum):
     LIGHT = 1
     DARK = 2
 
+
 class Modus(Enum):
     AUTO = 1
     MANUEL = 2
 
+
 """
 ---------------------------------------------------------------------
 """
-
 """
 This module is a wrapper to compute sunset and sunrise for a given day,
 location, and zenith value. Sunset and sunrise are returned for the local time
 zone.
 """
 
-CIVIL_ZENITH = 90.83333 # civil
+CIVIL_ZENITH = 90.83333  # civil
+
 
 class SunriseSunset(object):
     """
@@ -82,17 +120,17 @@ class SunriseSunset(object):
     datetime class as input and output.
     """
     def __init__(self, dt, latitude, longitude, localOffset=0, zenith=None):
-        self.dt          = dt.replace(hour=0, minute=0, second=0, microsecond=0)
+        self.dt = dt.replace(hour=0, minute=0, second=0, microsecond=0)
         if latitude < -90 or latitude > 90:
             raise ValueError('Invalid latitude value')
         if longitude < -180 or longitude > 180:
             raise ValueError('Invalid longitude value')
         if localOffset < -12 or localOffset > 14:
             raise ValueError('Invalid localOffset value')
-        self.latitude    = latitude
-        self.longitude   = longitude
+        self.latitude = latitude
+        self.longitude = longitude
         self.localOffset = localOffset
-        self.zenith      = zenith if zenith is not None else CIVIL_ZENITH
+        self.zenith = zenith if zenith is not None else CIVIL_ZENITH
 
     # ALGORITHM
 
@@ -115,21 +153,25 @@ class SunriseSunset(object):
 
         # Calculate the Sun's true longitude, and adjust angle to be between 0
         # and 360
-        L_rise = (M_rise + (1.916 * math.sin(math.radians(M_rise))) + (0.020 * math.sin(math.radians(2 * M_rise))) + 282.634) % 360
-        L_set = (M_set + (1.916 * math.sin(math.radians(M_set))) + (0.020 * math.sin(math.radians(2 * M_set))) + 282.634) % 360
+        L_rise = (M_rise + (1.916 * math.sin(math.radians(M_rise))) +
+                  (0.020 * math.sin(math.radians(2 * M_rise))) + 282.634) % 360
+        L_set = (M_set + (1.916 * math.sin(math.radians(M_set))) +
+                 (0.020 * math.sin(math.radians(2 * M_set))) + 282.634) % 360
 
         # Calculate the Sun's right ascension, and adjust angle to be between 0 and
         # 360
-        RA_rise = (math.degrees(math.atan(0.91764 * math.tan(math.radians(L_rise))))) % 360
-        RA_set = (math.degrees(math.atan(0.91764 * math.tan(math.radians(L_set))))) % 360
+        RA_rise = (math.degrees(
+            math.atan(0.91764 * math.tan(math.radians(L_rise))))) % 360
+        RA_set = (math.degrees(
+            math.atan(0.91764 * math.tan(math.radians(L_set))))) % 360
 
         # Right ascension value needs to be in the same quadrant as L
-        Lquadrant_rise  = (math.floor(L_rise/90)) * 90
-        RAquadrant_rise = (math.floor(RA_rise/90)) * 90
+        Lquadrant_rise = (math.floor(L_rise / 90)) * 90
+        RAquadrant_rise = (math.floor(RA_rise / 90)) * 90
         RA_rise = RA_rise + (Lquadrant_rise - RAquadrant_rise)
 
-        Lquadrant_set  = (math.floor(L_set/90)) * 90
-        RAquadrant_set = (math.floor(RA_set/90)) * 90
+        Lquadrant_set = (math.floor(L_set / 90)) * 90
+        RAquadrant_set = (math.floor(RA_set / 90)) * 90
         RA_set = RA_set + (Lquadrant_set - RAquadrant_set)
 
         # Right ascension value needs to be converted into hours
@@ -148,8 +190,11 @@ class SunriseSunset(object):
         radian_lat = math.radians(self.latitude)
         sin_latitude = math.sin(radian_lat)
         cos_latitude = math.cos(radian_lat)
-        cosH_rise = (cos_zenith - (sinDec_rise * sin_latitude)) / (cosDec_rise * cos_latitude)
-        cosH_set = (cos_zenith - (sinDec_set * sin_latitude)) / (cosDec_set * cos_latitude)
+        cosH_rise = (cos_zenith -
+                     (sinDec_rise * sin_latitude)) / (cosDec_rise *
+                                                      cos_latitude)
+        cosH_set = (cos_zenith -
+                    (sinDec_set * sin_latitude)) / (cosDec_set * cos_latitude)
 
         # Finish calculating H and convert into hours
         H_rise = (360 - math.degrees(math.acos(cosH_rise))) / 15
@@ -179,9 +224,11 @@ class SunriseSunset(object):
         set_dt = date.replace(hour=h_set, minute=m_set)
         return rise_dt, set_dt
 
+
 """
 ---------------------------------------------------------------------
 """
+
 
 def calculate(now) -> Tuple[Theme, float]:
     if not now:
@@ -194,14 +241,14 @@ def calculate(now) -> Tuple[Theme, float]:
 
     now_time = now - daystart
 
-
     if now < rise_time:
         yesterday = now - datetime.timedelta(days=1)
-        yesterday_rise_time, yesterday_set_time = SunriseSunset(yesterday, latitude=LATITUTE, longitude=LONGITUTE).calculate()
+        yesterday_rise_time, yesterday_set_time = SunriseSunset(
+            yesterday, latitude=LATITUTE, longitude=LONGITUTE).calculate()
 
         total = (daystart - yesterday_set_time) + (rise_time - daystart)
         current = now - yesterday_set_time
-        
+
         progress = current.total_seconds() / total.total_seconds()
 
         if verbose:
@@ -224,10 +271,12 @@ def calculate(now) -> Tuple[Theme, float]:
         return Theme.LIGHT, progress
     else:
         tomorrow = now + datetime.timedelta(days=1)
-        tomorrow_rise_time, tomorrow_set_time = SunriseSunset(tomorrow, latitude=LATITUTE, longitude=LONGITUTE).calculate()
+        tomorrow_rise_time, tomorrow_set_time = SunriseSunset(
+            tomorrow, latitude=LATITUTE, longitude=LONGITUTE).calculate()
         tomorrow_daystart = daystart + datetime.timedelta(days=1)
 
-        total = (tomorrow_daystart - set_time) + (tomorrow_rise_time - tomorrow_daystart)
+        total = (tomorrow_daystart - set_time) + (tomorrow_rise_time -
+                                                  tomorrow_daystart)
         current = now - set_time
 
         progress = current.total_seconds() / total.total_seconds()
@@ -238,6 +287,7 @@ def calculate(now) -> Tuple[Theme, float]:
             print("sunrise: {}".format(tomorrow_rise_time))
 
         return Theme.DARK, progress
+
 
 def read_data() -> Tuple[Theme, Modus, Optional[float]]:
     with open(FILE) as json_file:
@@ -264,41 +314,61 @@ def read_data() -> Tuple[Theme, Modus, Optional[float]]:
 
 def write_data(theme: Theme, modus: Modus, progress: Optional[float]):
     with open(FILE, "w") as json_file:
-        json.dump({
-            "theme": theme.name,
-            "modus": modus.name,
-            "progress": progress
-        }, json_file, indent=4)
+        json.dump(
+            {
+                "theme": theme.name,
+                "modus": modus.name,
+                "progress": progress
+            },
+            json_file,
+            indent=4)
+
 
 if __name__ == "__main__":
     import argparse
-    parser = argparse.ArgumentParser(description='Perform theming based on the current day time.')
-    parser.add_argument('-t', '--time', help='The current time (format: HH:MM)')
-    parser.add_argument('-d', '--date', help='The current date (format: YYYY:MM-DD)')
+    parser = argparse.ArgumentParser(
+        description='Perform theming based on the current day time.')
+    parser.add_argument('-t',
+                        '--time',
+                        help='The current time (format: HH:MM)')
+    parser.add_argument('-d',
+                        '--date',
+                        help='The current date (format: YYYY:MM-DD)')
 
     group = parser.add_mutually_exclusive_group()
-    group.add_argument('--auto', action='store_true', help='Change to auto mode')
-    group.add_argument('--light', action='store_true', help='Change to ligh mode')
-    group.add_argument('--dark', action='store_true', help='Change to dark mode')
-    group.add_argument('--toggle', action='store_true', help='Switch modes [auto -> light -> dark]')
+    group.add_argument('--auto',
+                       action='store_true',
+                       help='Change to auto mode')
+    group.add_argument('--light',
+                       action='store_true',
+                       help='Change to ligh mode')
+    group.add_argument('--dark',
+                       action='store_true',
+                       help='Change to dark mode')
+    group.add_argument('--toggle',
+                       action='store_true',
+                       help='Switch modes [auto -> light -> dark]')
 
-    parser.add_argument('-v', '--verbose', action='store_true', help='Enable verbose output')
+    parser.add_argument('-v',
+                        '--verbose',
+                        action='store_true',
+                        help='Enable verbose output')
 
     args = parser.parse_args()
-    
+
     verbose = args.verbose
 
     dt = datetime.datetime.now().replace(microsecond=0)
 
     if args.date:
         try:
-            y,m,d = args.date.split("-")
+            y, m, d = args.date.split("-")
             dt = dt.replace(year=int(y), month=int(m), day=int(d))
         except:
             pass
     if args.time:
         try:
-            h,m = args.time.split(":")
+            h, m = args.time.split(":")
             dt = dt.replace(hour=int(h), minute=int(m), second=0)
         except:
             pass
@@ -329,12 +399,15 @@ if __name__ == "__main__":
             modus = Modus.MANUEL
             progress = None
         else:
-            theme, progress = calculate(dt)
-            modus = Modus.AUTO 
+            theme = Theme.LIGHT
+            modus = Modus.MANUEL
+            progress = None
+            # theme, progress = calculate(dt)
+            # modus = Modus.AUTO
     elif old_modus is Modus.AUTO:
         theme, progress = calculate(dt)
-        modus = Modus.AUTO 
-        
+        modus = Modus.AUTO
+
     write_data(theme, modus, progress)
 
     if verbose:
@@ -353,13 +426,14 @@ if __name__ == "__main__":
     if progress != old_progress or theme is not old_theme:
         if verbose:
             if progress:
-                print(" -> on_progress({0}, {1:0.4f})".format(theme.name, progress))
+                print(" -> on_progress({0}, {1:0.4f})".format(
+                    theme.name, progress))
             else:
                 print(" -> on_progress({}, {})".format(theme.name, progress))
         on_progress(theme, progress)
 
     if theme is not old_theme and modus is Modus.MANUEL or modus is not old_modus:
         if verbose:
-            print(" -> on_status_change({}, {})".format(theme.name, modus.name))
+            print(" -> on_status_change({}, {})".format(
+                theme.name, modus.name))
         on_status_change(theme, modus)
-

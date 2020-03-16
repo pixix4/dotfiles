@@ -1,0 +1,7 @@
+default-timeout=3000
+group-by=app-name
+max-icon-size=36
+layer=overlay
+
+[grouped]
+format=<b>%s</b>\n%b

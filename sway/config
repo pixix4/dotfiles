@@ -1,0 +1,327 @@
+# Default config for sway
+#
+# Copy this to ~/.config/sway/config and edit it to your liking.
+#
+# Read `man 5 sway` for a complete reference.
+
+### Variables
+#
+# Logo key. Use Mod1 for Alt.
+set $mod Mod4
+# Your preferred terminal emulator
+set $term alacritty
+# Your preferred application launcher
+# Note: it's recommended that you pass the final command to sway
+set $menu dmenu_path | bemenu | xargs swaymsg exec --
+
+### Output configuration
+#
+# Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
+
+# Do not edit the next line (auto theming)
+output * bg /home/lars/dotfiles/theming/backgrounds/10-Night.png fill
+output * {
+    position 4480,360
+}
+output eDP-1 {
+    resolution 1920x1080
+    position 2560,360
+}
+output 'Lenovo Group Limited P24h-10 0x00000101' {
+    resolution 2560x1440
+    position 0,0
+}
+
+#
+# Example configuration:
+#
+#   output HDMI-A-1 resolution 1920x1080 position 1920,0
+#
+# You can get the names of your outputs by running: swaymsg -t get_outputs
+
+### Idle configuration
+#
+# Example configuration:
+#
+exec swayidle -w \
+         #timeout 300 '~/dotfiles/lock/lock.sh' \
+         #timeout 600 'swaymsg "output * dpms off"' \
+         #     resume 'swaymsg "output * dpms on"' \
+         before-sleep '~/dotfiles/lock/lock.sh'
+#
+# This will lock your screen after 300 seconds of inactivity, then turn off
+# your displays after another 300 seconds, and turn your screens back on when
+# resumed. It will also lock your screen before your computer goes to sleep.
+
+bindsym $mod+l exec '~/dotfiles/lock/lock.sh'
+
+### Input configuration
+#
+# Example configuration:
+#
+input type:touchpad {
+    dwt enabled
+    tap enabled
+    natural_scroll enabled
+    middle_emulation enabled
+    pointer_accel 0.3
+    scroll_factor 0.5
+}
+
+input "9450:407:Mexxen_/_Zebex_2D_Image_Scanner" {
+  events disabled
+}
+
+#
+# You can get the names of your inputs by running: swaymsg -t get_inputs
+# Read `man 5 sway-input` for more information about this section.
+
+input type:keyboard {
+    xkb_layout "us"
+    # xkb_variant "nodeadkeys"
+    xkb_numlock enabled
+    xkb_options "compose:caps"
+    # xkb_options "compose:caps,grp:alt_shift_toggle"
+}
+
+set $MOUSE "1133:4122:Logitech_Performance_MX"
+bindsym --whole-window BTN_FORWARD seat - cursor press button2
+bindsym --whole-window --release BTN_FORWARD seat - cursor release button2
+
+
+
+### Key bindings
+#
+# Basics:
+#
+    # Start a terminal
+    bindsym $mod+Return exec $term
+
+    # Kill focused window
+    bindsym $mod+Shift+q kill
+
+    # Start your launcher
+   
+    bindsym $mod+s exec wofi --show drun
+    bindsym $mod+d exec $menu
+    # bindsym $mod+s exec rofi -show drun
+    # bindsym $mod+ctrl+s exec wofi --show drun
+    # bindsym $mod+shift+s exec pkill rofi
+
+    # Drag floating windows by holding down $mod and left mouse button.
+    # Resize them with right mouse button + $mod.
+    # Despite the name, also works for non-floating windows.
+    # Change normal to inverse to use left mouse button for resizing and right
+    # mouse button for dragging.
+    floating_modifier $mod normal
+
+    # Reload the configuration file
+    bindsym $mod+Shift+c reload
+
+    # Exit sway (logs you out of your Wayland session)
+    bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
+#
+# Moving around:
+#
+# Or use $mod+[up|down|left|right]
+    bindsym $mod+Left focus left
+    bindsym $mod+Down focus down
+    bindsym $mod+Up focus up
+    bindsym $mod+Right focus right
+
+# Ditto, with arrow keys
+    bindsym $mod+Shift+Left move left
+    bindsym $mod+Shift+Down move down
+    bindsym $mod+Shift+Up move up
+    bindsym $mod+Shift+Right move right
+
+# Move to another output
+    bindsym $mod+Ctrl+Left move workspace to output left
+    bindsym $mod+Ctrl+Down move workspace to output down
+    bindsym $mod+Ctrl+Up move workspace to output up
+    bindsym $mod+Ctrl+Right move workspace to output right
+#
+# Workspaces:
+#
+
+    set $ws1 "1: 1 "
+    set $ws2 "2: 2 "
+    set $ws3 "3: 3 "
+    set $ws4 "4: 4 "
+    set $ws5 "5: 5 "
+    set $ws6 "6: 6 "
+    set $ws7 "7: 7 "
+    set $ws8 "8: 8 "
+    set $ws9 "9: 9 "
+    set $ws10 "10: 10 "
+    set $ws21 "21:  "
+    set $ws22 "22:  "
+    set $ws23 "23:  "
+
+    # Switch to workspace
+    bindsym $mod+1 workspace $ws1
+    bindsym $mod+2 workspace $ws2
+    bindsym $mod+3 workspace $ws3
+    bindsym $mod+4 workspace $ws4
+    bindsym $mod+5 workspace $ws5
+    bindsym $mod+6 workspace $ws6
+    bindsym $mod+7 workspace $ws7
+    bindsym $mod+8 workspace $ws8
+    bindsym $mod+9 workspace $ws9
+    bindsym $mod+0 workspace $ws10
+    # Move focused container to workspace
+    bindsym $mod+Shift+1 move container to workspace $ws1
+    bindsym $mod+Shift+2 move container to workspace $ws2
+    bindsym $mod+Shift+3 move container to workspace $ws3
+    bindsym $mod+Shift+4 move container to workspace $ws4
+    bindsym $mod+Shift+5 move container to workspace $ws5
+    bindsym $mod+Shift+6 move container to workspace $ws6
+    bindsym $mod+Shift+7 move container to workspace $ws7
+    bindsym $mod+Shift+8 move container to workspace $ws8
+    bindsym $mod+Shift+9 move container to workspace $ws9
+    bindsym $mod+Shift+0 move container to workspace $ws10
+    # Note: workspaces can have any name you want, not just numbers.
+    # We just use 1-10 as the default.
+#
+# Layout stuff:
+#
+    # You can "split" the current object of your focus with
+    # $mod+b or $mod+v, for horizontal and vertical splits
+    # respectively.
+    bindsym $mod+h splith
+    bindsym $mod+v splitv
+
+    # Switch the current container between different layout styles
+    # bindsym $mod+s layout stacking
+    bindsym $mod+w layout tabbed
+    bindsym $mod+e layout toggle split
+
+    # Make the current focus fullscreen
+    bindsym $mod+f fullscreen
+
+    # Toggle the current focus between tiling and floating mode
+    bindsym $mod+Shift+space floating toggle
+
+    # Swap focus between the tiling area and the floating area
+    bindsym $mod+space focus mode_toggle
+
+    # Move focus to the parent container
+    bindsym $mod+a focus parent
+#
+# Scratchpad:
+#
+    # Sway has a "scratchpad", which is a bag of holding for windows.
+    # You can send windows there and get them back later.
+
+    # Move the currently focused window to the scratchpad
+    bindsym $mod+Shift+minus move scratchpad
+
+    # Show the next scratchpad window or hide the focused scratchpad window.
+    # If there are multiple scratchpad windows, this command cycles through them.
+    bindsym $mod+minus scratchpad show
+#
+# Resizing containers:
+#
+mode "resize" {
+    # left will shrink the containers width
+    # right will grow the containers width
+    # up will shrink the containers height
+    # down will grow the containers height
+    bindsym Left resize shrink width 10px
+    bindsym Down resize grow height 10px
+    bindsym Up resize shrink height 10px
+    bindsym Right resize grow width 10px
+
+    # Return to default mode
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+r mode "resize"
+
+
+bindsym $mod+t exec "~/dotfiles/scripts/run-and-switch.sh Telegram telegram-desktop \"'$ws21'\""
+bindsym $mod+Shift+t move container to workspace $ws21
+bindsym $mod+y exec "~/dotfiles/scripts/run-and-switch.sh thunderbird thunderbird \"'$ws22'\""
+bindsym $mod+Shift+y move container to workspace $ws22
+# bindsym $mod+u exec "~/dotfiles/scripts/run-and-switch.sh slack slack \"'$ws23'\""
+bindsym $mod+u exec "~/dotfiles/scripts/run-and-switch.sh riot-desktop riot-desktop \"'$ws23'\""
+bindsym $mod+Shift+u move container to workspace $ws23
+
+assign [class="Telegram"] $ws21
+assign [class="Thunderbird"] $ws22
+assign [class="Slack"] $ws23
+assign [class="Riot"] $ws23
+
+gaps inner 4px
+gaps outer -4px
+smart_borders on
+# for_window [class="^.*"] border pixel 1
+default_border none 0
+default_border pixel 2
+default_floating_border pixel 2
+#
+# Status Bar:
+#
+# Read `man 5 sway-bar` for more information about this section.
+bar {
+    position top
+    mode hide
+    modifier $mod
+
+    separator_symbol " 〉"
+    height 48px
+    tray_padding 5px
+
+    font RobotoMono Nerd Font 12
+
+    strip_workspace_numbers yes
+
+    # When the status_command prints a new line to stdout, swaybar updates.
+    # The default just shows the current date and time.
+    # status_command while date +'%Y-%m-%d %l:%M:%S %p'; do sleep 1; done
+    status_command i3blocks
+
+    colors {
+        statusline #ffffff
+        background #323232
+        inactive_workspace #323232 #323232 #999999
+    }
+}
+
+bindsym $mod+Tab workspace next
+bindsym $mod+Shift+Tab workspace prev
+
+bindsym XF86MonBrightnessDown exec "~/dotfiles/scripts/backlight.py darker"
+bindsym XF86MonBrightnessUp exec "~/dotfiles/scripts/backlight.py lighter"
+bindsym XF86AudioRaiseVolume exec "~/dotfiles/scripts/volume_up.sh"
+bindsym XF86AudioLowerVolume exec "~/dotfiles/scripts/volume_down.sh"
+bindsym XF86AudioMute exec "~/dotfiles/scripts/volume_toggle.sh"
+bindsym XF86AudioMicMute exec "~/dotfiles/scripts/mic_toggle.sh"
+
+bindsym $mod+o exec "~/dotfiles/theming/theming --toggle"
+bindsym $mod+F12 exec "~/dotfiles/scripts/spotify_toggle.sh"
+bindsym $mod+Home exec "~/dotfiles/scripts/spotify_toggle.sh"
+bindsym XF86AudioPlay exec "~/dotfiles/scripts/spotify_toggle.sh"
+bindsym XF86AudioPause exec "~/dotfiles/scripts/spotify_toggle.sh"
+bindsym $mod+n exec networkmanager_dmenu
+
+bindsym $mod+print exec grim ~/screenshot.png
+
+exec dbus-daemon --session --address=unix:path=$XDG_RUNTIME_DIR/bus
+exec mako
+exec nm-applet --indicator
+exec redshift -m wayland
+
+exec_always "~/dotfiles/theming/theming"
+
+set $gnome-schema org.gnome.desktop.interface
+
+
+exec_always {
+    gsettings set $gnome-schema gtk-theme 'Arc-Darker'
+    gsettings set $gnome-schema icon-theme 'Arc'
+    # gsettings set $gnome-schema cursor-theme 'Your cursor Theme'
+}
+
+include /etc/sway/config.d/*
+

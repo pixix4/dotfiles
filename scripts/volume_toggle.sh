@@ -1,16 +1,18 @@
 #!/bin/sh
 
-volume=$(amixer -D pulse sget Master | grep -m 1 "%]" |cut -d "[" -f2|cut -d "%" -f1)
+volume=$(pamixer --get-volume)
 
-mute=$(amixer -D pulse sget Master | grep "off" | wc -l)
+mute=$(pamixer --get-mute)
 
-icon="/home/lars/dotfiles/screen/volume/ic_volume_off.png"
+icon="/home/lars/dotfiles/icons/volume/ic_volume_off.png"
 
-if [ $mute -eq 0 ]; then
-    amixer -q -D pulse sset Master mute
+message=$volume
+if [ "$mute" == "false" ]; then
+    pamixer --mute
+    message="mute"
 else
-    icon="/home/lars/dotfiles/screen/volume/ic_volume_up.png"
-    amixer -q -D pulse sset Master unmute
+    icon="/home/lars/dotfiles/icons/volume/ic_volume_up.png"
+    pamixer --unmute
 fi
 
-notify-send "volume" -i $icon -t 500 -h int:value:$volume -h string:x-canonical-private-synchronous:volume
+notify-send "Volume: $message" -i $icon -t 500 -h int:value:$volume -h string:x-canonical-private-synchronous:volume

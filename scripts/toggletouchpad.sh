@@ -10,4 +10,4 @@ else
   xinput enable $device
   value="On"
 fi
-notify-send "Touchpad" "$value" -t 500 -i "/home/lars/dotfiles/screen/light/ic_touch_app.png" -h string:x-canonical-private-synchronous:volume
+notify-send "Touchpad" "$value" -t 500 -i "/home/lars/dotfiles/icons/light/ic_touch_app.png" -h string:x-canonical-private-synchronous:volume

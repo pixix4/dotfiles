@@ -8,4 +8,6 @@ fi
 
 #wmctrl -x -a $1
 #i3-msg workspace $3
-bspc desktop -f $3
+#bspc desktop -f $3
+swaymsg workspace "\"$3\""
+

@@ -1,20 +1,17 @@
-! ------------------------------------------------------------------------------
-! ROFI Color theme
-! Copyright: 2017 leofa
-! ------------------------------------------------------------------------------
-! "Color scheme for normal row" Set from: File
-rofi.color-normal:                   argb:00000000, argb:8affffff, argb:00000000, argb:00000000, #f9f9f9
-! "Color scheme for urgent row" Set from: File
-rofi.color-urgent:                   argb:2c1d1f21, #cc6666, argb:e54b5160, #a54242, #f9f9f9
-! "Color scheme for active row" Set from: File
-rofi.color-active:                   argb:00ffffff, #00bcd4, argb:e44b5160, argb:00000000, #ffffff
-! "Color scheme window" Set from: File
-rofi.color-window:                   argb:c0000000, #00333333, #001d1f21
-! "Separator style (none, dash, solid)" Set from: XResources
-rofi.separator-style:                none
-rofi.line-margin:	16
-rofi.lines:		4
-rofi.width:		100
-rofi.padding:		300
-rofi.bw:		0
-rofi.fullscreen:	true
+rofi.hide-scrollbar:	true
+rofi.modi:		combi,drun
+rofi.terminal:		alacritty
+rofi.kb-cancel:		Escape,Alt+F1,Alt+F2
+rofi.lines:		8
+rofi.soft:		false
+rofi.sorting-method:	fzf
+rofi.combi-modi:	drun,run
+rofi.combi-hide-mode-prefix:	true
+rofi.display-combi:	Search
+rofi.display-drun:      Search
+rofi.bw:		2
+rofi.padding:		0
+rofi.fixed-num-lines:	false
+rofi.theme:		vapor.rasi
+rofi.yoffset:		-280
+rofi.fullscreen:        false

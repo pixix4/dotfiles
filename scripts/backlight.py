@@ -8,7 +8,7 @@ step_count = 30
 steps = step_count - 1
 red = 0.98
 
-icon = "/home/lars/dotfiles/screen/light/ic_backlight_high.png"
+icon = "/home/lars/dotfiles/icons/light/ic_backlight_high.png"
 
 def step_to_backlight(step):
     return (math.pow(expo, step / steps) - red) / (expo - red) * 100
@@ -45,7 +45,8 @@ def set_backlight(value):
 
     b = step_to_backlight(x)
     subprocess.run(['light', '-S', str(b)])
-    subprocess.run(['notify-send', 'dsp', '-i', icon, '-h', 'int:value:'+str(x / steps * 100), '-t', '500', '-h', 'string:synchronous:dsp'])
+    val = str(int(x / steps * 100))
+    subprocess.run(['notify-send', 'Backlight: '+val, '-i', icon, '-h', 'int:value:'+val, '-t', '500', '-h', 'string:synchronous:dsp'])
 
 def darker():
     set_backlight(current_step - 1)
