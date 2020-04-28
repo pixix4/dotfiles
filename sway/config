@@ -19,7 +19,7 @@ set $menu dmenu_path | bemenu | xargs swaymsg exec --
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
 
 # Do not edit the next line (auto theming)
-output * bg /home/lars/dotfiles/theming/backgrounds/10-Night.png fill
+output * bg /home/lars/dotfiles/theming/backgrounds/05-Day.png fill
 output * {
     position 4480,360
 }
@@ -43,11 +43,7 @@ output 'Lenovo Group Limited P24h-10 0x00000101' {
 #
 # Example configuration:
 #
-exec swayidle -w \
-         #timeout 300 '~/dotfiles/lock/lock.sh' \
-         #timeout 600 'swaymsg "output * dpms off"' \
-         #     resume 'swaymsg "output * dpms on"' \
-         before-sleep '~/dotfiles/lock/lock.sh'
+exec swayidle -w before-sleep '~/dotfiles/lock/lock.sh'
 #
 # This will lock your screen after 300 seconds of inactivity, then turn off
 # your displays after another 300 seconds, and turn your screens back on when
